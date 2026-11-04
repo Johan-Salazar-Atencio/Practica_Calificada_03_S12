@@ -1,7 +1,9 @@
 package com.tecsup.empresa.controller;
 
+import com.tecsup.empresa.dto.EmpresaRequest;
 import com.tecsup.empresa.model.Empresa;
 import com.tecsup.empresa.services.EmpresaService;
+import jakarta.validation.Valid;
 import java.util.List;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -35,15 +37,16 @@ public class EmpresaController {
         return service.buscarPorId(id);
     }
 
+    // @Valid ejecuta las validaciones del DTO antes de entrar al método.
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED) // 201
-    public Empresa registrar(@RequestBody Empresa empresa) {
-        return service.registrar(empresa);
+    public Empresa registrar(@Valid @RequestBody EmpresaRequest datos) {
+        return service.registrar(datos);
     }
 
     @PutMapping("/{id}")
-    public Empresa actualizar(@PathVariable Long id, @RequestBody Empresa empresa) {
-        return service.actualizar(id, empresa);
+    public Empresa actualizar(@PathVariable Long id, @Valid @RequestBody EmpresaRequest datos) {
+        return service.actualizar(id, datos);
     }
 
     @DeleteMapping("/{id}")

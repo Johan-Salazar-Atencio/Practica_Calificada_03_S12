@@ -1,5 +1,7 @@
 package com.tecsup.empresa.services;
 
+import com.tecsup.empresa.dto.EmpresaRequest;
+import com.tecsup.empresa.exception.BusinessRuleException;
 import com.tecsup.empresa.exception.ResourceNotFoundException;
 import com.tecsup.empresa.model.Empresa;
 import com.tecsup.empresa.repository.EmpresaRepository;
@@ -28,24 +30,35 @@ public class EmpresaServiceImpl implements EmpresaService {
     }
 
     @Override
-    public Empresa registrar(Empresa empresa) {
-        empresa.setId(null); // un registro nuevo nunca trae id
-        return repository.save(empresa);
+    public Empresa registrar(EmpresaRequest datos) {
+        if (repository.existsByRuc(datos.ruc())) {
+            throw new BusinessRuleException("Ya existe una empresa con el RUC " + datos.ruc());
+        }
+        return repository.save(copiar(new Empresa(), datos));
     }
 
     @Override
-    public Empresa actualizar(Long id, Empresa datos) {
+    public Empresa actualizar(Long id, EmpresaRequest datos) {
         Empresa actual = buscarPorId(id);
-        actual.setRuc(datos.getRuc());
-        actual.setRazonSocial(datos.getRazonSocial());
-        actual.setCorreo(datos.getCorreo());
-        actual.setTelefono(datos.getTelefono());
-        actual.setEstado(datos.getEstado());
-        return repository.save(actual);
+        // Solo se valida el RUC repetido si el usuario lo está cambiando.
+        if (!actual.getRuc().equals(datos.ruc()) && repository.existsByRuc(datos.ruc())) {
+            throw new BusinessRuleException("Ya existe una empresa con el RUC " + datos.ruc());
+        }
+        return repository.save(copiar(actual, datos));
     }
 
     @Override
     public void eliminar(Long id) {
         repository.delete(buscarPorId(id)); // si no existe, lanza 404
+    }
+
+    // Pasa los datos del DTO a la entidad.
+    private Empresa copiar(Empresa empresa, EmpresaRequest datos) {
+        empresa.setRuc(datos.ruc());
+        empresa.setRazonSocial(datos.razonSocial());
+        empresa.setCorreo(datos.correo());
+        empresa.setTelefono(datos.telefono());
+        empresa.setEstado(datos.estado());
+        return empresa;
     }
 }

@@ -1,5 +1,6 @@
 package com.tecsup.empresa.services;
 
+import com.tecsup.empresa.dto.EmpresaRequest;
 import com.tecsup.empresa.model.Empresa;
 import java.util.List;
 
@@ -10,9 +11,9 @@ public interface EmpresaService {
 
     Empresa buscarPorId(Long id);
 
-    Empresa registrar(Empresa empresa);
+    Empresa registrar(EmpresaRequest datos);
 
-    Empresa actualizar(Long id, Empresa empresa);
+    Empresa actualizar(Long id, EmpresaRequest datos);
 
     void eliminar(Long id);
 }
