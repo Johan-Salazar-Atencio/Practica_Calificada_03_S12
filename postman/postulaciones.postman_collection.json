@@ -1,0 +1,777 @@
+{
+  "info": {
+    "name": "Postulaciones - Evaluacion 03",
+    "description": "Pruebas de empresa-service (8081), vacante-service (8082) y postulacion-service (8083). Ejecutar en orden con Run.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "01 Empresa",
+      "item": [
+        {
+          "name": "1. Registrar empresa (201)",
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.collectionVariables.set(\"ruc\", String(Math.floor(10000000000 + Math.random() * 89999999999)));",
+                  "pm.collectionVariables.set(\"hoy\", new Date().toISOString().slice(0, 10));"
+                ]
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Codigo 201\", function () { pm.response.to.have.status(201); });",
+                  "pm.collectionVariables.set(\"empresaId\", pm.response.json().id);"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{empresaUrl}}/api/empresas",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"ruc\": \"{{ruc}}\",\n  \"razonSocial\": \"Tecsup SAC\",\n  \"correo\": \"rrhh@tecsup.pe\",\n  \"telefono\": \"999111222\",\n  \"estado\": \"ACTIVA\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "2. Listar empresas (200)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Codigo 200\", function () { pm.response.to.have.status(200); });"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{empresaUrl}}/api/empresas"
+          }
+        },
+        {
+          "name": "3. Buscar empresa por ID (200)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Codigo 200\", function () { pm.response.to.have.status(200); });",
+                  "pm.test(\"Es la empresa creada\", function () { pm.expect(pm.response.json().id).to.eql(pm.collectionVariables.get(\"empresaId\")); });"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{empresaUrl}}/api/empresas/{{empresaId}}"
+          }
+        },
+        {
+          "name": "4. Actualizar empresa (200)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Codigo 200\", function () { pm.response.to.have.status(200); });"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{empresaUrl}}/api/empresas/{{empresaId}}",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"ruc\": \"{{ruc}}\",\n  \"razonSocial\": \"Tecsup SAC Actualizada\",\n  \"correo\": \"rrhh@tecsup.pe\",\n  \"telefono\": \"999111222\",\n  \"estado\": \"ACTIVA\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "02 Vacante",
+      "item": [
+        {
+          "name": "5. Publicar vacante (201)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Codigo 201\", function () { pm.response.to.have.status(201); });",
+                  "pm.collectionVariables.set(\"vacanteId\", pm.response.json().id);"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{vacanteUrl}}/api/vacantes",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"titulo\": \"Desarrollador Java\",\n  \"descripcion\": \"Backend con Spring Boot\",\n  \"area\": \"TI\",\n  \"fechaCierre\": \"2026-12-31\",\n  \"idEmpresa\": {{empresaId}},\n  \"estado\": \"ABIERTA\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "6. Listar vacantes (200)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Codigo 200\", function () { pm.response.to.have.status(200); });"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{vacanteUrl}}/api/vacantes"
+          }
+        },
+        {
+          "name": "7. Buscar vacante por ID (200)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Codigo 200\", function () { pm.response.to.have.status(200); });"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{vacanteUrl}}/api/vacantes/{{vacanteId}}"
+          }
+        },
+        {
+          "name": "8. Vacantes de una empresa (200)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Codigo 200\", function () { pm.response.to.have.status(200); });"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{vacanteUrl}}/api/vacantes?idEmpresa={{empresaId}}"
+          }
+        },
+        {
+          "name": "9. Actualizar vacante (200)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Codigo 200\", function () { pm.response.to.have.status(200); });"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{vacanteUrl}}/api/vacantes/{{vacanteId}}",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"titulo\": \"Desarrollador Java Senior\",\n  \"descripcion\": \"Backend con Spring Boot\",\n  \"area\": \"TI\",\n  \"fechaCierre\": \"2026-12-31\",\n  \"idEmpresa\": {{empresaId}},\n  \"estado\": \"ABIERTA\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "03 Postulacion",
+      "item": [
+        {
+          "name": "10. Registrar postulacion (201)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Codigo 201\", function () { pm.response.to.have.status(201); });",
+                  "pm.collectionVariables.set(\"postulacionId\", pm.response.json().id);",
+                  "pm.test(\"Queda PENDIENTE por defecto\", function () { pm.expect(pm.response.json().estado).to.eql(\"PENDIENTE\"); });"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{postulacionUrl}}/api/postulaciones",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"idVacante\": {{vacanteId}},\n  \"nombrePostulante\": \"Ana Torres\",\n  \"correo\": \"ana.torres@mail.com\",\n  \"fecha\": \"{{hoy}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "11. Buscar postulacion por ID (200)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Codigo 200\", function () { pm.response.to.have.status(200); });"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{postulacionUrl}}/api/postulaciones/{{postulacionId}}"
+          }
+        },
+        {
+          "name": "12. Postulaciones de una vacante (200)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Codigo 200\", function () { pm.response.to.have.status(200); });"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{postulacionUrl}}/api/postulaciones?idVacante={{vacanteId}}"
+          }
+        },
+        {
+          "name": "13. Cambiar estado a EN_REVISION (200)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Codigo 200\", function () { pm.response.to.have.status(200); });",
+                  "pm.test(\"Estado actualizado\", function () { pm.expect(pm.response.json().estado).to.eql(\"EN_REVISION\"); });"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{postulacionUrl}}/api/postulaciones/{{postulacionId}}",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"idVacante\": {{vacanteId}},\n  \"nombrePostulante\": \"Ana Torres\",\n  \"correo\": \"ana.torres@mail.com\",\n  \"fecha\": \"{{hoy}}\",\n  \"estado\": \"EN_REVISION\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "04 Casos de error",
+      "item": [
+        {
+          "name": "14. Empresa con datos invalidos (400)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Codigo 400\", function () { pm.response.to.have.status(400); });",
+                  "pm.test(\"Detalla los campos\", function () { pm.expect(pm.response.json().detalles).to.have.property(\"ruc\"); });"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{empresaUrl}}/api/empresas",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"ruc\": \"123\",\n  \"razonSocial\": \"\",\n  \"correo\": \"no-es-correo\",\n  \"estado\": \"ACTIVA\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "15. Empresa con RUC repetido (400)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Codigo 400\", function () { pm.response.to.have.status(400); });"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{empresaUrl}}/api/empresas",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"ruc\": \"{{ruc}}\",\n  \"razonSocial\": \"Tecsup SAC\",\n  \"correo\": \"rrhh@tecsup.pe\",\n  \"telefono\": \"999111222\",\n  \"estado\": \"ACTIVA\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "16. Empresa con ID inexistente (404)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Codigo 404\", function () { pm.response.to.have.status(404); });"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{empresaUrl}}/api/empresas/99999"
+          }
+        },
+        {
+          "name": "17. Vacante sin fechaCierre (400)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Codigo 400\", function () { pm.response.to.have.status(400); });",
+                  "pm.test(\"Pide la fecha de cierre\", function () { pm.expect(pm.response.json().detalles).to.have.property(\"fechaCierre\"); });"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{vacanteUrl}}/api/vacantes",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"titulo\": \"Desarrollador Java\",\n  \"descripcion\": \"Backend con Spring Boot\",\n  \"area\": \"TI\",\n  \"idEmpresa\": {{empresaId}},\n  \"estado\": \"ABIERTA\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "18. Vacante con empresa inexistente (404)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Codigo 404\", function () { pm.response.to.have.status(404); });"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{vacanteUrl}}/api/vacantes",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"titulo\": \"Desarrollador Java\",\n  \"descripcion\": \"Backend con Spring Boot\",\n  \"area\": \"TI\",\n  \"fechaCierre\": \"2026-12-31\",\n  \"idEmpresa\": 99999,\n  \"estado\": \"ABIERTA\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "19. Postulacion con correo vacio (400)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Codigo 400\", function () { pm.response.to.have.status(400); });",
+                  "pm.test(\"Pide el correo\", function () { pm.expect(pm.response.json().detalles).to.have.property(\"correo\"); });"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{postulacionUrl}}/api/postulaciones",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"idVacante\": {{vacanteId}},\n  \"nombrePostulante\": \"Ana Torres\",\n  \"correo\": \"\",\n  \"fecha\": \"{{hoy}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "20. Postulacion con vacante inexistente (404)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Codigo 404\", function () { pm.response.to.have.status(404); });"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{postulacionUrl}}/api/postulaciones",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"idVacante\": 99999,\n  \"nombrePostulante\": \"Ana Torres\",\n  \"correo\": \"ana.torres@mail.com\",\n  \"fecha\": \"{{hoy}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "21a. Cerrar la vacante (200)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Codigo 200\", function () { pm.response.to.have.status(200); });"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{vacanteUrl}}/api/vacantes/{{vacanteId}}",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"titulo\": \"Desarrollador Java\",\n  \"descripcion\": \"Backend con Spring Boot\",\n  \"area\": \"TI\",\n  \"fechaCierre\": \"2026-12-31\",\n  \"idEmpresa\": {{empresaId}},\n  \"estado\": \"CERRADA\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "21b. Postular a vacante cerrada (400)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Codigo 400\", function () { pm.response.to.have.status(400); });"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{postulacionUrl}}/api/postulaciones",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"idVacante\": {{vacanteId}},\n  \"nombrePostulante\": \"Ana Torres\",\n  \"correo\": \"ana.torres@mail.com\",\n  \"fecha\": \"{{hoy}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "05 Eliminar y limpiar",
+      "item": [
+        {
+          "name": "22. Eliminar postulacion (204)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Codigo 204\", function () { pm.response.to.have.status(204); });"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": "{{postulacionUrl}}/api/postulaciones/{{postulacionId}}"
+          }
+        },
+        {
+          "name": "23. Eliminar vacante (204)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Codigo 204\", function () { pm.response.to.have.status(204); });"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": "{{vacanteUrl}}/api/vacantes/{{vacanteId}}"
+          }
+        },
+        {
+          "name": "24. Eliminar empresa (204)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Codigo 204\", function () { pm.response.to.have.status(204); });"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": "{{empresaUrl}}/api/empresas/{{empresaId}}"
+          }
+        },
+        {
+          "name": "25. Empresa eliminada ya no existe (404)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Codigo 404\", function () { pm.response.to.have.status(404); });"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{empresaUrl}}/api/empresas/{{empresaId}}"
+          }
+        }
+      ]
+    }
+  ],
+  "variable": [
+    {
+      "key": "empresaUrl",
+      "value": "http://localhost:8081"
+    },
+    {
+      "key": "vacanteUrl",
+      "value": "http://localhost:8082"
+    },
+    {
+      "key": "postulacionUrl",
+      "value": "http://localhost:8083"
+    },
+    {
+      "key": "empresaId",
+      "value": ""
+    },
+    {
+      "key": "vacanteId",
+      "value": ""
+    },
+    {
+      "key": "postulacionId",
+      "value": ""
+    },
+    {
+      "key": "ruc",
+      "value": ""
+    },
+    {
+      "key": "hoy",
+      "value": ""
+    }
+  ]
+}
