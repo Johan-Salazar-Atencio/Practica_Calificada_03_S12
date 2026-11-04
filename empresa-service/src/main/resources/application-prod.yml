@@ -1,0 +1,14 @@
+# Producción: los valores sensibles vienen de variables de entorno, nunca escritos aquí
+server:
+  port: ${SERVER_PORT:9081}
+
+spring:
+  datasource:
+    url: ${DB_URL:jdbc:mysql://servidor-bd:3306/bd_empresa_daw}
+    username: ${DB_USER:app_postulaciones}
+    password: ${DB_PASSWORD}
+  jpa:
+    hibernate:
+      ddl-auto: validate # exige que las tablas ya existan (sql/bases-daw.sql)
+    show-sql: false
+

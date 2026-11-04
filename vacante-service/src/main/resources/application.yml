@@ -1,18 +1,6 @@
 spring:
   application:
     name: vacante-service
-  datasource:
-    url: jdbc:mysql://localhost:3306/bd_vacante_daw
-    username: root
-    password: ""
-  jpa:
-    hibernate:
-      ddl-auto: update
-
-server:
-  port: 8082
-
-# Dirección de empresa-service (se valida que la empresa exista antes de guardar una vacante)
-servicios:
-  empresa:
-    url: http://localhost:8081
+  profiles:
+    # Perfil activo: se cambia con la variable de entorno PROFILE_ACTIVE (por defecto, dev)
+    active: ${PROFILE_ACTIVE:dev}

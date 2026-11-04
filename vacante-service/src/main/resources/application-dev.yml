@@ -1,0 +1,17 @@
+# Desarrollo: todo local (MySQL de XAMPP, root sin contraseña)
+server:
+  port: 8082
+
+spring:
+  datasource:
+    url: jdbc:mysql://localhost:3306/bd_vacante_daw
+    username: root
+    password: ""
+  jpa:
+    hibernate:
+      ddl-auto: update # crea o ajusta las tablas solo
+    show-sql: true
+
+servicios:
+  empresa:
+    url: http://localhost:8081

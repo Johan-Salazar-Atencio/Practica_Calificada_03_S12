@@ -1,0 +1,17 @@
+# Desarrollo: todo local (MySQL de XAMPP, root sin contraseña)
+server:
+  port: 8083
+
+spring:
+  datasource:
+    url: jdbc:mysql://localhost:3306/bd_postulacion_daw
+    username: root
+    password: ""
+  jpa:
+    hibernate:
+      ddl-auto: update # crea o ajusta las tablas solo
+    show-sql: true
+
+servicios:
+  vacante:
+    url: http://localhost:8082
