@@ -1,0 +1,13 @@
+spring:
+  application:
+    name: empresa-service
+  datasource:
+    url: jdbc:mysql://localhost:3306/bd_empresa_daw
+    username: root
+    password: ""
+  jpa:
+    hibernate:
+      ddl-auto: update
+
+server:
+  port: 8081
